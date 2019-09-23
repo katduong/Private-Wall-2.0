@@ -1,0 +1,23 @@
+<h3 class="mb-3">Send Messages</h3>
+<p id="messagesSent" class="green">You have sent <span class="green">{{ numSent }}</span> messages so far.</p>
+{% with messages = get_flashed_messages(category_filter=["message"]) %}
+<!-- declare a variable called messages -->
+{% if messages %}
+<!-- check if there are any messages -->
+{% for message in messages %}
+<!-- loop through the messages -->
+<p class="red">{{message}}</p> <!-- display each message in a paragraph tag -->
+{% endfor %}
+{% endif %}
+{% endwith %}
+{% for friend in friends: %}
+<div class="my-4 d-flex justify-content-between">
+    <p class="d-inline-block align-top">{{ friend['first_name'] }}</p>
+    <form id='send{{friend["id"]}}' class="send d-inline-block">
+        <textarea class="d-inline-block mx-2" name="message" rows="4" cols="45"></textarea>
+        <input type="hidden" name="friend" value="{{ friend['id'] }}">
+        <input type="hidden" name="user" value="{{ session['userId'] }}">
+        <input class="btn btn-primary d-inline-block align-top mx-2" type="submit" value="Send">
+    </form>
+</div>
+{% endfor %}

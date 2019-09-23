@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <title>Wall</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+        img {
+            width: 35px;
+            border: solid 1px black;
+            padding: 5px;
+            border-radius: 20%;
+        }
+
+        .green {
+            color: green;
+        }
+
+        hr {
+            border: solid 0.5px #dee2e6;
+        }
+
+        .red {
+            color: red;
+        }
+
+        .myMessages {
+            height: 100%;
+            overflow-y: scroll;
+        }
+
+        .fixed {
+            height: 500px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-light bg-light justify-content-between border-bottom">
+        <h2 class="">CodingDojo Wall</h2>
+        <div class="d-inline">
+            <p class="d-inline mx-3">Welcome, {{ userName }}</p>
+            <a href="/logout">Log out</a>
+        </div>
+    </nav>
+    <div class="container-fluid">
+
+        <div class="row mt-3 fixed">
+            <div class="d-inline-block col align-top myMessages">
+                <div class="m-4 ml-5">
+                    <div id="myMessagesDiv">
+                        <h3 id="numMessages" class="mb-3"><span class="green">{{numMessages}}</span> Message(s) for You</h3>
+
+                        {% for message in myMessages: %}
+                        <div id="{{message['id']}}" class="my-3 d-flex justify-content-between">
+                            <div class="d-inline-block align-middle">
+                                <p>{{ message['sender_fn'] }} said</p>
+                                <p class="ml-4">"{{ message['content'] }}"</p>
+                            </div>
+                            <a id="delete{{message['id']}}" class="delete d-inline-block align-middle">
+                                <img src="{{ url_for('static', filename = 'trashcan.png')}}" alt="">
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="d-inline-block col border-left myMessages">
+                <div id="sendMessages"class="m-4 mr-5">
+                    <h3 class="mb-3">Send Messages</h3>
+                    <p id="messagesSent" class="green">You have sent <span class="green">{{ numSent }}</span> messages so far.</p>
+                    {% with messages = get_flashed_messages(category_filter=["message"]) %}
+                    <!-- declare a variable called messages -->
+                    {% if messages %}
+                    <!-- check if there are any messages -->
+                    {% for message in messages %}
+                    <!-- loop through the messages -->
+                    <p class="red">{{message}}</p> <!-- display each message in a paragraph tag -->
+                    {% endfor %}
+                    {% endif %}
+                    {% endwith %}
+                    {% for friend in friends: %}
+                    <div class="my-4 d-flex justify-content-between">
+                        <p class="d-inline-block align-top">{{ friend['first_name'] }}</p>
+                        <form id='send{{friend["id"]}}' class="send d-inline-block">
+                            <textarea class="d-inline-block mx-2" name="message" rows="4" cols="45"></textarea>
+                            <input type="hidden" name="friend" value="{{ friend['id'] }}">
+                            <input type="hidden" name="user" value="{{ session['userId'] }}">
+                            <input class="btn btn-primary d-inline-block align-top mx-2" type="submit" value="Send">
+                        </form>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='wall.js') }}"></script>
+</body>
+
+</html>
